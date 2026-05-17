@@ -50,12 +50,41 @@ public class MachineRepository : IMachineRepository
     public async Task<List<Machine>> GetAvailableAsync()
     {
         return await _db.Machines
-            .Where(m => m.IsRunning && m.CurrentLoad < m.MaxLoad)
+            .Where(m => 
+                   m.IsRunning && 
+                   m.CurrentLoad <= m.MaxLoad)
             .OrderBy(m => (double)m.CurrentLoad / m.MaxLoad)
+            .ToListAsync();
+    }
+    public async Task<List<Machine>> GetAvailableJobAsync(int Load)
+    {
+        return await _db.Machines
+            .Where(m =>
+                   m.IsRunning &&
+                   m.CurrentLoad + Load <= m.MaxLoad)
             .ToListAsync();
     }
     public async Task SaveChangesAsync()
     {
         await _db.SaveChangesAsync();   
+    }
+    public async Task<Job> AddJobAsync(Job job)
+    {
+        _db.Jobs.Add(job);
+        await _db.SaveChangesAsync();
+        return job;
+    }
+    public async Task<MachineJob> AddMachineJobAsync(MachineJob machineJob)
+    {
+        _db.MachineJobs.Add(machineJob);
+        await _db.SaveChangesAsync();
+        return machineJob;
+    }
+    public async Task<List<MachineJob>> GetMachineJobAsync(int machineId)
+    {
+        return await _db.MachineJobs
+            .Include(mj => mj.Job)
+            .Where(mj => mj.MachineId == machineId)
+            .ToListAsync();
     }
 }

@@ -53,5 +53,11 @@ namespace FactoryScheduler.Api.Controllers
             var res = await _service.GetAvailableAsync();
             return Ok(res);
         }
+        [HttpGet("{id}/jobs")]
+        public async Task<ActionResult<List<MachineJobDto>>> GetMachineJobs(int id)
+        {
+            var res = await _service.GetMachineJobAsync(id);
+            return Ok(res);
+        }
     }
 }

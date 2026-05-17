@@ -111,5 +111,17 @@ namespace FactoryScheduler.Api.Services
                 IsRunning = m.IsRunning
             }).ToList();
         }
+        public async Task<List<MachineJobDto>> GetMachineJobAsync(int machineId)
+        {
+            var machineJobs = await _machineRepository.GetMachineJobAsync(machineId);
+            return machineJobs.Select(mj => new MachineJobDto
+            {
+                JobId = mj.JobId,
+                JobName = mj.Job.JobName,
+                StartTime = mj.StartTime,
+                EndTime = mj.EndTime,
+                Status = mj.Status,
+            }).ToList();
+        }
     }
 }

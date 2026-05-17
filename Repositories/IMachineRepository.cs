@@ -9,5 +9,9 @@ public interface IMachineRepository
     Task<Machine?> UpdateAsync(int id, Machine machine);
     Task<Machine?> DeleteAsync(int id);
     Task<List<Machine>> GetAvailableAsync();
+    Task<List<Machine>> GetAvailableJobAsync(int Load);
     Task SaveChangesAsync();
+    Task<Job> AddJobAsync(Job job);
+    Task<MachineJob> AddMachineJobAsync(MachineJob machineJob);
+    Task<List<MachineJob>> GetMachineJobAsync(int machineId);
 }

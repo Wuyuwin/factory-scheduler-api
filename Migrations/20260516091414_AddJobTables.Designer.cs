@@ -4,6 +4,7 @@ using FactoryScheduler.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FactoryScheduler.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260516091414_AddJobTables")]
+    partial class AddJobTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,9 +72,6 @@ namespace FactoryScheduler.Api.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<double>("Ratio")
-                        .HasColumnType("double");
-
                     b.Property<int>("WorkMinutes")
                         .HasColumnType("int");
 
@@ -115,7 +115,7 @@ namespace FactoryScheduler.Api.Migrations
             modelBuilder.Entity("FactoryScheduler.Api.Entities.MachineJob", b =>
                 {
                     b.HasOne("FactoryScheduler.Api.Entities.Job", "Job")
-                        .WithMany("MachineJobs")
+                        .WithMany("MachineJob")
                         .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -133,7 +133,7 @@ namespace FactoryScheduler.Api.Migrations
 
             modelBuilder.Entity("FactoryScheduler.Api.Entities.Job", b =>
                 {
-                    b.Navigation("MachineJobs");
+                    b.Navigation("MachineJob");
                 });
 
             modelBuilder.Entity("FactoryScheduler.Api.Entities.Machine", b =>

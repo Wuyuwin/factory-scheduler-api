@@ -12,5 +12,6 @@ namespace FactoryScheduler.Api.Services
         Task<MachineDto?> UpdateAsync(int id, UpdateMachineDto dto);
         Task<MachineDto?> DeleteAsync(int id); 
         Task<List<MachineDto>> GetAvailableAsync();
+        Task<List<MachineJobDto>> GetMachineJobAsync(int machineId);
     }
 }

@@ -59,5 +59,11 @@ namespace FactoryScheduler.Api.Controllers
             var res = await _service.GetMachineJobAsync(id);
             return Ok(res);
         }
+        [HttpGet("{id}/timeline")]
+        public async Task<ActionResult<List<MachineTimelineDto>>> GetMachineTimeline(int id)
+        {
+            var res = await _service.GetMachineTimelineAsync(id);
+            return Ok(res);
+        }
     }
 }

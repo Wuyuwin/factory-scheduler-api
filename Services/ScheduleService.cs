@@ -18,14 +18,14 @@ namespace FactoryScheduler.Api.Services
             var now = DateTime.UtcNow;
             var suitableMachine = machines
                 .OrderBy(m =>
-                    now
-                    .AddMinutes(m.WorkMinutes / m.Ratio)
-                    .AddMinutes(dto.WorkMinutes / m.Ratio))
+                    (m.WorkMinutes / m.Ratio) + (dto.WorkMinutes / m.Ratio))
+                .ThenBy(m => (double)m.CurrentLoad / m.MaxLoad)
                 .First();
             if (suitableMachine == null) { return null; }
             var startTime = now.AddMinutes(suitableMachine.WorkMinutes / suitableMachine.Ratio);
             var endTime = startTime.AddMinutes(dto.WorkMinutes / suitableMachine.Ratio);
-            var status = startTime <= now ? JobStatus.Running : JobStatus.Pending;
+            var hasRunningJob = await _machineRepository.HasRunningJobAsync(suitableMachine.Id);
+            var status = hasRunningJob ? JobStatus.Pending : JobStatus.Running;
             var job = new Job
             {
                 JobName = dto.JobName,

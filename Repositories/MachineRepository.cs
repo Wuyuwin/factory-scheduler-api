@@ -64,6 +64,11 @@ public class MachineRepository : IMachineRepository
                    m.CurrentLoad + Load <= m.MaxLoad)
             .ToListAsync();
     }
+    public async Task<bool> HasRunningJobAsync(int machineId)
+    {
+        return await _db.MachineJobs
+            .AnyAsync(mj => mj.MachineId == machineId && mj.Status == Enums.JobStatus.Running);
+    }
     public async Task SaveChangesAsync()
     {
         await _db.SaveChangesAsync();   
@@ -85,6 +90,14 @@ public class MachineRepository : IMachineRepository
         return await _db.MachineJobs
             .Include(mj => mj.Job)
             .Where(mj => mj.MachineId == machineId)
+            .ToListAsync();
+    }
+    public async Task<List<MachineJob>> GetMachineTimelineAsync(int machineId)
+    {
+        return await _db.MachineJobs
+            .Include(mj => mj.Job)
+            .Where(mj => mj.MachineId == machineId)
+            .OrderBy(mj => mj.StartTime)
             .ToListAsync();
     }
 }

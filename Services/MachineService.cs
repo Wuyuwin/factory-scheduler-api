@@ -118,9 +118,24 @@ namespace FactoryScheduler.Api.Services
             {
                 JobId = mj.JobId,
                 JobName = mj.Job.JobName,
+                Load = mj.Job.Load,
                 StartTime = mj.StartTime,
                 EndTime = mj.EndTime,
                 Status = mj.Status,
+            }).ToList();
+        }
+        public async Task<List<MachineTimelineDto>> GetMachineTimelineAsync(int machineId)
+        {
+            var machineJobs = await _machineRepository.GetMachineTimelineAsync(machineId);
+            return machineJobs.Select(mj => new MachineTimelineDto
+            {
+                JobId = mj.JobId,
+                JobName = mj.Job.JobName,
+                StartTime = mj.StartTime,
+                EndTime = mj.EndTime,
+                Status = mj.Status.ToString(),
+                Load = mj.Job.Load,
+                MachineWork = mj.Job.WorkMinutes
             }).ToList();
         }
     }

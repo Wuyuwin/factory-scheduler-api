@@ -7,6 +7,7 @@
         public string MachineName { get; set; } = string.Empty;
         public int UpdatedLoad { get; set; }
         public int WorkMinutes { get; set; }
+        public string Priority { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
     }
 }

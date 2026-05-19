@@ -4,6 +4,7 @@ using FactoryScheduler.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FactoryScheduler.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260519084648_AddEmergencyOrder")]
+    partial class AddEmergencyOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,14 +36,14 @@ namespace FactoryScheduler.Api.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<bool>("IsEmergency")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("JobName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("Load")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Priority")
                         .HasColumnType("int");
 
                     b.Property<int>("WorkMinutes")

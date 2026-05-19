@@ -8,5 +8,6 @@ namespace FactoryScheduler.Api.Repositories
         Task<List<MachineJob>> GetAllJobsAsync();
         Task<MachineJob?> GetByIdAsync(int id);
         Task<List<MachineJob>> GetJobsByStatusAsync(JobStatus jobStatus);
+        Task<List<MachineJob>> GetJobsByPriorityAsync(JobPriority priority);
     }
 }

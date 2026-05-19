@@ -38,5 +38,15 @@ namespace FactoryScheduler.Api.Controllers
             var jobs = await _jobService.GetJobsByStatusAsync(jobStatus);
             return Ok(jobs);
         }
+        [HttpGet("priority/{priority}")]
+        public async Task<IActionResult> GetJobsByPriority(string priority)
+        {
+            if (!Enum.TryParse<JobPriority>(priority, true, out var jobPriority))
+            {
+                return BadRequest(new { Message = "Invalid job priority." });
+            }
+            var jobs = await _jobService.GetJobsByPriorityAsync(jobPriority);
+            return Ok(jobs);
+        }
     }
 }

@@ -8,5 +8,6 @@ namespace FactoryScheduler.Api.Services
         Task<List<JobDto>> GetAllJobsAsync();
         Task<JobDto?> GetByIdAsync(int id);
         Task<List<JobDto>> GetJobsByStatusAsync(JobStatus jobStatus);
+        Task<List<JobDto>> GetJobsByPriorityAsync(JobPriority priority);
     }
 }

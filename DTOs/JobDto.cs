@@ -1,4 +1,6 @@
-﻿namespace FactoryScheduler.Api.DTOs
+﻿using FactoryScheduler.Api.Enums;
+
+namespace FactoryScheduler.Api.DTOs
 {
     public class JobDto
     {
@@ -9,6 +11,7 @@
         public string Status { get; set; } = string.Empty;
         public int MachineId { get; set; }
         public string MachineName { get; set; } = string.Empty;
+        public string  Priority { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 

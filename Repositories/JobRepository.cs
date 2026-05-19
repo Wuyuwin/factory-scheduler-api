@@ -35,5 +35,14 @@ namespace FactoryScheduler.Api.Repositories
                 .Where(mj => mj.Status == jobStatus)
                 .ToListAsync();
         }
+        public async Task<List<MachineJob>> GetJobsByPriorityAsync(JobPriority priority)
+        {
+            return await _db.MachineJobs
+                .Include(mj => mj.Job)
+                .Include(mj => mj.Machine)
+                .Where(mj => mj.Job.Priority == priority)
+                .OrderByDescending(mj => mj.StartTime)
+                .ToListAsync();
+        }
     }
 }

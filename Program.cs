@@ -3,6 +3,7 @@ using FactoryScheduler.Api.Repositories;
 using FactoryScheduler.Api.Services;
 using FactoryScheduler.Api.BackgroundServices;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using IJobRepository = FactoryScheduler.Api.Repositories.IJobRepository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -26,6 +31,8 @@ builder.Services.AddScoped<IMachineService, MachineService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddHostedService<JobStatusUpdaterService>();
 
 var app = builder.Build();

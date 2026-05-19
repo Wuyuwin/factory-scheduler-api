@@ -28,6 +28,11 @@ namespace FactoryScheduler.Api.Services
             var machineJobs = await _jobRepository.GetJobsByStatusAsync(jobStatus);
             return machineJobs.Select(MapToJobDto).ToList();
         }
+        public async Task<List<JobDto>> GetJobsByPriorityAsync(JobPriority priority)
+        {
+            var machineJobs = await _jobRepository.GetJobsByPriorityAsync(priority);
+            return machineJobs.Select(MapToJobDto).ToList();
+        }
         private JobDto MapToJobDto(MachineJob machineJob)
         {
             return new JobDto
@@ -36,6 +41,7 @@ namespace FactoryScheduler.Api.Services
                 JobName = machineJob.Job.JobName,
                 Load = machineJob.Job.Load,
                 WorkMinutes = machineJob.Job.WorkMinutes,
+                Priority = machineJob.Job.Priority.ToString(),
                 Status = machineJob.Status.ToString(),
                 MachineId = machineJob.MachineId,
                 MachineName = machineJob.Machine.Name,

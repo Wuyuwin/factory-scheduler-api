@@ -16,11 +16,17 @@ namespace FactoryScheduler.Api.Services
         {
             var machines = await _machineRepository.GetAvailableJobAsync(dto.Load);
             var now = DateTime.UtcNow;
-            var suitableMachine = machines
-                .OrderBy(m =>
-                    (m.WorkMinutes / m.Ratio) + (dto.WorkMinutes / m.Ratio))
-                .ThenBy(m => (double)m.CurrentLoad / m.MaxLoad)
-                .First();
+            var suitableMachine =
+                dto.Priority == JobPriority.Emergency ||
+                dto.Priority == JobPriority.High
+                ? machines
+                    .OrderBy(m =>(m.WorkMinutes / m.Ratio) + (dto.WorkMinutes / m.Ratio))
+                    .ThenBy(m => (double)m.CurrentLoad / m.MaxLoad)
+                    .First()
+                : machines 
+                    .OrderBy(m => (m.WorkMinutes / m.Ratio) + (dto.WorkMinutes / m.Ratio))
+                    .ThenBy(m => (double)(m.CurrentLoad + dto.Load) / m.MaxLoad)
+                    .First();
             if (suitableMachine == null) { return null; }
             var startTime = now.AddMinutes(suitableMachine.WorkMinutes / suitableMachine.Ratio);
             var endTime = startTime.AddMinutes(dto.WorkMinutes / suitableMachine.Ratio);
@@ -30,7 +36,8 @@ namespace FactoryScheduler.Api.Services
             {
                 JobName = dto.JobName,
                 Load = dto.Load,
-                WorkMinutes = dto.WorkMinutes
+                WorkMinutes = dto.WorkMinutes,
+                Priority = dto.Priority
             };
             var createJob = await _machineRepository.AddJobAsync(job);
             var machineJob = new MachineJob
@@ -52,6 +59,7 @@ namespace FactoryScheduler.Api.Services
                 MachineName = suitableMachine.Name,
                 UpdatedLoad = suitableMachine.CurrentLoad,
                 WorkMinutes = suitableMachine.WorkMinutes,
+                Priority = createJob.Priority.ToString(),
                 Message = $"Job assigned to machine {suitableMachine.Name},{suitableMachine.Id}"
             };
         }

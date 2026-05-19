@@ -3,6 +3,7 @@ using FactoryScheduler.Api.Repositories;
 using FactoryScheduler.Api.Services;
 using FactoryScheduler.Api.BackgroundServices;
 using Microsoft.EntityFrameworkCore;
+using IJobRepository = FactoryScheduler.Api.Repositories.IJobRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -23,6 +24,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<IMachineRepository, MachineRepository>();
 builder.Services.AddScoped<IMachineService, MachineService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
+builder.Services.AddScoped<IJobRepository, JobRepository>();
+builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddHostedService<JobStatusUpdaterService>();
 
 var app = builder.Build();

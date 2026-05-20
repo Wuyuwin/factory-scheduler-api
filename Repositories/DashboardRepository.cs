@@ -29,9 +29,15 @@ namespace FactoryScheduler.Api.Repositories
         }
         public async Task<double> GetAverageLoadAsync()
         {
-            return await _db.Machines
-                .Where(m => m.CurrentLoad > 0)
-                .AverageAsync(m => (double)m.CurrentLoad / m.MaxLoad * 100);
+            var machines = await _db.Machines
+                .Where(x => x.MaxLoad > 0)
+                .ToListAsync();
+
+            if (machines.Count == 0)
+                return 0;
+
+            return machines.Average(x =>
+                (double)x.CurrentLoad / x.MaxLoad * 100);
         }
     }
 }

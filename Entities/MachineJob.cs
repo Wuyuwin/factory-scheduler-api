@@ -11,8 +11,8 @@ namespace FactoryScheduler.Api.Entities
         public int JobId { get; set; }
         public Job Job { get; set; } = null!;
         public DateTime StartTime { get; set; }
-
         public DateTime EndTime { get; set; }
         public JobStatus Status { get; set; }
+        public JobPriority Priority { get; set; }
     }
 }

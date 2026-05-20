@@ -39,14 +39,22 @@ namespace FactoryScheduler.Api.BackgroundServices
                         {
                             machine.CurrentLoad -= machineJob.Job.Load;
                             machine.WorkMinutes -= machineJob.Job.WorkMinutes;
-                            if (machine.CurrentLoad <= 0)
+                            if (machine.CurrentLoad < 0)
                             {
                                 machine.CurrentLoad = 0;
                             }
-                            if (machine.WorkMinutes <= 0)
+                            if (machine.WorkMinutes < 0)
                             {
                                 machine.WorkMinutes = 0;
                             }
+                        }
+                        else if (machineJob.Status == JobStatus.Pending &&
+                                machineJob.StartTime <= now)
+                        {
+                            machineJob.Status = JobStatus.Running;
+                        }
+                        {
+                            // Handle the case where the machine is not found
                         }
                         await dbContext.SaveChangesAsync(stoppingToken);
                     }

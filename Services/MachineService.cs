@@ -23,6 +23,7 @@ namespace FactoryScheduler.Api.Services
                 MaxLoad = m.MaxLoad,
                 CurrentLoad = m.CurrentLoad,
                 WorkMinutes = m.WorkMinutes,
+                Ratio = m.Ratio,
                 IsRunning = m.IsRunning
             }).ToList();
         }
@@ -122,6 +123,7 @@ namespace FactoryScheduler.Api.Services
                 StartTime = mj.StartTime,
                 EndTime = mj.EndTime,
                 Status = mj.Status,
+                Priority = mj.Job.Priority
             }).ToList();
         }
         public async Task<List<MachineTimelineDto>> GetMachineTimelineAsync(int machineId)

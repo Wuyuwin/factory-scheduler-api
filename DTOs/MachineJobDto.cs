@@ -11,6 +11,7 @@ namespace FactoryScheduler.Api.DTOs
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public JobStatus Status { get; set; }
+        public JobPriority Priority { get; set; }
 
     }
 }

@@ -7,6 +7,7 @@
         public int MaxLoad { get; set; }
         public int CurrentLoad { get; set; }
         public int WorkMinutes { get; set; }
+        public double Ratio { get; set; } = 1.0;
         public bool IsRunning { get; set; }
     }
 }

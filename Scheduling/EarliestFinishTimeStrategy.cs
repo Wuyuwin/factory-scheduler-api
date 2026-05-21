@@ -6,6 +6,8 @@ namespace FactoryScheduler.Api.Scheduling
 {
     public class EarliestFinishTimeStrategy : ISchedulingStrategy
     {
+        public string Mode => "Rule";
+        public string Message => "Selected by Earliest Finish Time";
         public Task<Machine?> SelectMachineAsync(List<Machine> machines, AssignJobDto dto)
         {
             var priorityWeight = GetPriorityWeight(dto.Priority);

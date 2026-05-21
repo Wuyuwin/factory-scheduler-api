@@ -69,7 +69,10 @@ namespace FactoryScheduler.Api.Services
                 UpdatedLoad = suitableMachine.CurrentLoad,
                 WorkMinutes = suitableMachine.WorkMinutes,
                 Priority = createJob.Priority.ToString(),
-                Message = $"Job assigned to machine {suitableMachine.Name},{suitableMachine.Id}"
+                Message = 
+                    $"{_schedulingStrategy.Mode} Mode:" +
+                    $" Job assigned to machine {suitableMachine.Name},{suitableMachine.Id}." +
+                    $"Reason: {_schedulingStrategy.Message}"
             };
         }
         private async Task<ScheduleResultDto?> AssignEmergencyJobAsync(AssignJobDto dto)
@@ -132,7 +135,10 @@ namespace FactoryScheduler.Api.Services
                 UpdatedLoad = suitableMachine.CurrentLoad,
                 WorkMinutes = suitableMachine.WorkMinutes,
                 Priority = createJob.Priority.ToString(),
-                Message = $"Emergency job assigned to machine {suitableMachine.Name},{suitableMachine.Id}"
+                Message = 
+                    $"{_schedulingStrategy.Mode} Mode:" +
+                    $" Job assigned to machine {suitableMachine.Name},{suitableMachine.Id}." +
+                    $"Reason: {_schedulingStrategy.Message}"
             };
         }
     }

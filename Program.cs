@@ -26,7 +26,16 @@ builder.Services.AddControllers()
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// Add repositories and services
+var schedulerMode = builder.Configuration["Scheduler:Mode"];
+if (schedulerMode == "AI")
+{
+    builder.Services.AddScoped<ISchedulingStrategy, AiSchedulingStrategy>();
+}
+else
+{
+    builder.Services.AddScoped<ISchedulingStrategy, EarliestFinishTimeStrategy>();
+}
+
 builder.Services.AddScoped<IMachineRepository, MachineRepository>();
 builder.Services.AddScoped<IMachineService, MachineService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
@@ -34,8 +43,8 @@ builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-builder.Services.AddScoped<ISchedulingStrategy, EarliestFinishTimeStrategy>();
 builder.Services.AddHostedService<JobStatusUpdaterService>();
+builder.Services.AddHttpClient<OllamaSchedulerService>();
 
 var app = builder.Build();
 

@@ -2,6 +2,7 @@ using FactoryScheduler.Api.Data;
 using FactoryScheduler.Api.Repositories;
 using FactoryScheduler.Api.Services;
 using FactoryScheduler.Api.BackgroundServices;
+using FactoryScheduler.Api.Scheduling;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using IJobRepository = FactoryScheduler.Api.Repositories.IJobRepository;
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IJobRepository, JobRepository>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<ISchedulingStrategy, EarliestFinishTimeStrategy>();
 builder.Services.AddHostedService<JobStatusUpdaterService>();
 
 var app = builder.Build();

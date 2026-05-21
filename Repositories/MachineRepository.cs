@@ -100,4 +100,18 @@ public class MachineRepository : IMachineRepository
             .OrderBy(mj => mj.StartTime)
             .ToListAsync();
     }
+    public async Task ClearJobsAsync()
+    {
+        var machineJobs = await _db.MachineJobs.ToListAsync();
+        _db.MachineJobs.RemoveRange(machineJobs);
+        var jobs = await _db.Jobs.ToListAsync();
+        _db.Jobs.RemoveRange(jobs);
+        await _db.SaveChangesAsync();
+        var machines = await _db.Machines.ToListAsync();
+        foreach (var m in machines) {
+            m.CurrentLoad = 0;
+            m.WorkMinutes = 0;
+        }
+        await _db.SaveChangesAsync();
+    }
 }

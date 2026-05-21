@@ -2,26 +2,26 @@
 using FactoryScheduler.Api.Repositories;
 using FactoryScheduler.Api.Entities;
 using FactoryScheduler.Api.Enums;
+using FactoryScheduler.Api.Scheduling;
 
 namespace FactoryScheduler.Api.Services
 {
     public class ScheduleService : IScheduleService
     {
         private readonly IMachineRepository _machineRepository;
-        public ScheduleService(IMachineRepository machineRepository)
+        private readonly ISchedulingStrategy _schedulingStrategy;
+        public ScheduleService(IMachineRepository machineRepository, ISchedulingStrategy schedulingStrategy)
         {
             _machineRepository = machineRepository;
+            _schedulingStrategy = schedulingStrategy;
         }
         public async Task<ScheduleResultDto?> AssignJobAsync(AssignJobDto dto)
         {
-            if (dto.Priority == JobPriority.Emergency || dto.Priority == JobPriority.High)
+            if (dto.Priority == JobPriority.Emergency)
             { return await AssignEmergencyJobAsync(dto); }
             var machines = await _machineRepository.GetAvailableJobAsync(dto.Load);
             var now = DateTime.UtcNow;
-            var suitableMachine = machines
-                    .OrderBy(m => (m.WorkMinutes / m.Ratio) + (dto.WorkMinutes / m.Ratio))
-                    .ThenBy(m => (double)(m.CurrentLoad + dto.Load) / m.MaxLoad)
-                    .FirstOrDefault();
+            var suitableMachine = await _schedulingStrategy.SelectMachineAsync(machines, dto);
             if (suitableMachine == null) { return null; }
             var schedule = await _machineRepository.GetMachineTimelineAsync(suitableMachine.Id);
 
@@ -58,7 +58,8 @@ namespace FactoryScheduler.Api.Services
             };
             await _machineRepository.AddMachineJobAsync(machineJob);
             suitableMachine.CurrentLoad += dto.Load;
-            suitableMachine.WorkMinutes += (int)(dto.WorkMinutes / suitableMachine.Ratio);
+            var addedWorkMinutes = (int)Math.Ceiling(dto.WorkMinutes / suitableMachine.Ratio);
+            suitableMachine.WorkMinutes += addedWorkMinutes;
             await _machineRepository.SaveChangesAsync();
             return new ScheduleResultDto
             {
@@ -76,10 +77,7 @@ namespace FactoryScheduler.Api.Services
             var machines = await _machineRepository.GetAvailableJobAsync(dto.Load);
             if (machines.Count == 0) { return null; }
             var now = DateTime.UtcNow;
-            var suitableMachine = machines
-                    .OrderBy(m => (m.WorkMinutes / m.Ratio))
-                    .ThenBy(m => (double)(m.CurrentLoad + dto.Load) / m.MaxLoad)
-                    .FirstOrDefault();
+            var suitableMachine = await _schedulingStrategy.SelectMachineAsync(machines, dto);
             if (suitableMachine == null) { return null; }
             var schudule = await _machineRepository.GetMachineTimelineAsync(suitableMachine.Id);
             var FirstPendingJob = schudule
@@ -123,7 +121,8 @@ namespace FactoryScheduler.Api.Services
             };
             await _machineRepository.AddMachineJobAsync(machineJob);
             suitableMachine.CurrentLoad += dto.Load;
-            suitableMachine.WorkMinutes += (int)(dto.WorkMinutes / suitableMachine.Ratio);
+            var addedWorkMinutes = (int)Math.Ceiling(dto.WorkMinutes / suitableMachine.Ratio);
+            suitableMachine.WorkMinutes += addedWorkMinutes;
             await _machineRepository.SaveChangesAsync();
             return new ScheduleResultDto
             {

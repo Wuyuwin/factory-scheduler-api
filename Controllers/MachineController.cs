@@ -65,5 +65,11 @@ namespace FactoryScheduler.Api.Controllers
             var res = await _service.GetMachineTimelineAsync(id);
             return Ok(res);
         }
+        [HttpDelete("clear-jobs")]
+        public async Task<ActionResult> ClearJobs()
+        {
+            await _service.ClearJobsAsync();
+            return Ok(new { message = "Jobs cleared successfully." });
+        }
     }
 }

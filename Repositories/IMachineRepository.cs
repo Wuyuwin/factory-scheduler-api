@@ -16,4 +16,5 @@ public interface IMachineRepository
     Task<MachineJob> AddMachineJobAsync(MachineJob machineJob);
     Task<List<MachineJob>> GetMachineJobAsync(int machineId);
     Task<List<MachineJob>> GetMachineTimelineAsync(int machineId);
+    Task ClearJobsAsync();
 }

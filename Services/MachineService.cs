@@ -140,5 +140,9 @@ namespace FactoryScheduler.Api.Services
                 MachineWork = mj.Job.WorkMinutes
             }).ToList();
         }
+        public async Task ClearJobsAsync()
+        {
+            await _machineRepository.ClearJobsAsync();
+        }
     }
 }

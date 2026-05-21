@@ -28,24 +28,14 @@ namespace FactoryScheduler.Api.BackgroundServices
                         if (machineJob.EndTime <= now)
                         {
                             machineJob.Status = JobStatus.Completed;
-                        }
-                        else if (machineJob.StartTime <= now)
-                        {
-                            machineJob.Status = JobStatus.Running;
-                        }
-                        var machine = await dbContext.Machines
-                            .FirstOrDefaultAsync(m => m.Id == machineJob.MachineId, stoppingToken);
-                        if (machine != null && machineJob.Job is not null)
-                        {
-                            machine.CurrentLoad -= machineJob.Job.Load;
-                            machine.WorkMinutes -= machineJob.Job.WorkMinutes;
-                            if (machine.CurrentLoad < 0)
+                            var machine = await dbContext.Machines
+                                .FirstOrDefaultAsync(m => m.Id == machineJob.MachineId, stoppingToken);
+                            if (machine != null && machineJob.Job is not null)
                             {
-                                machine.CurrentLoad = 0;
-                            }
-                            if (machine.WorkMinutes < 0)
-                            {
-                                machine.WorkMinutes = 0;
+                                machine.CurrentLoad -= machineJob.Job.Load;
+                                machine.WorkMinutes -= machineJob.Job.WorkMinutes;
+                                if (machine.CurrentLoad < 0) { machine.CurrentLoad = 0;}
+                                if (machine.WorkMinutes < 0) {machine.WorkMinutes = 0;}
                             }
                         }
                         else if (machineJob.Status == JobStatus.Pending &&
